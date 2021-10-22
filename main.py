@@ -1,8 +1,54 @@
 from flask import Flask, render_template, request
+import json
 app = Flask(__name__)
+
+
+
+def write_json(new_data, filename='results.json'):
+    with open(filename,'r+') as file:
+        file_data = json.load(file)
+        file_data["matches"].append(new_data)
+        file.seek(0)
+        json.dump(file_data, file, indent = 4)
+ 
 
 @app.route('/')
 def root():
+    return render_template('index.html')
+
+@app.route('/adddreamteam',methods = ["POST"])
+def adddreamtem():
+    matchbetween=request.form.get("matchbetween")
+    pitchtype=request.form.get("pitchtype")
+    fav=request.form.get("fav")
+    one=request.form.get("1")
+    two=request.form.get("2")
+    three=request.form.get("3")
+    four=request.form.get("4")
+    five=request.form.get("5")
+    six=request.form.get("6")
+    seven=request.form.get("7")
+    eight=request.form.get("8")
+    nine=request.form.get("9")
+    ten=request.form.get("10")
+    elven=request.form.get("11")
+    data={
+    "matchbetween":matchbetween,
+    "pitchtype":pitchtype,
+    "fav":fav,
+    "one":one,
+    "two":two,
+    "three":three,
+    "four":four,
+    "five":five,
+    "six":six,
+    "seven":seven,
+    "eight":eight,
+    "nine":nine,
+    "ten":ten,
+    "elven":elven
+    }
+    write_json(data)
     return render_template('index.html')
 
 if __name__ == '__main__':
