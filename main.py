@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import json
+import flask
 app = Flask(__name__)
 
 
@@ -36,20 +37,20 @@ def root():
 
 @app.route('/adddreamteam',methods = ["POST"])
 def adddreamtem():
-    matchbetween=request.form.get("matchbetween")
-    pitchtype=request.form.get("pitchtype")
-    fav=request.form.get("fav")
-    one=request.form.get("1")
-    two=request.form.get("2")
-    three=request.form.get("3")
-    four=request.form.get("4")
-    five=request.form.get("5")
-    six=request.form.get("6")
-    seven=request.form.get("7")
-    eight=request.form.get("8")
-    nine=request.form.get("9")
-    ten=request.form.get("10")
-    eleven=request.form.get("11")
+    matchbetween=flask.request.args.get("matchbetween")
+    pitchtype=flask.request.args.get("pitchtype")
+    fav=flask.request.args.get("fav")
+    one=flask.request.args.get("1")
+    two=flask.request.args.get("2")
+    three=flask.request.args.get("3")
+    four=flask.request.args.get("4")
+    five=flask.request.args.get("5")
+    six=flask.request.args.get("6")
+    seven=flask.request.args.get("7")
+    eight=flask.request.args.get("8")
+    nine=flask.request.args.get("9")
+    ten=flask.request.args.get("10")
+    eleven=flask.request.args.get("11")
     data={
     "matchbetween":matchbetween,
     "pitchtype":pitchtype,
@@ -70,8 +71,8 @@ def adddreamtem():
     return render_template('index.html')
 @app.route('/getdreamteams',methods = ["POST"])
 def getdreamtem():
-    pitchtype=request.form.get("pitchtype")
-    fav=request.form.get("fav")
+    pitchtype=flask.request.args.get("pitchtype")
+    fav=flask.request.args.get("fav")
     res = filter_json(fav,pitchtype)
     print(res)
     return render_template('dreamteams.html',data=res)
