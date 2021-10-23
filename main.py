@@ -1,36 +1,47 @@
 from flask import Flask, render_template, request
 import json
+from google.cloud import datastore
+datastore_client = datastore.Client()
 app = Flask(__name__)
 
+def adddreamteam(matchbetween,pitchtype,fav,one,two,three,four,five,six,seven,eight,nine,ten,eleven):
+    entity = datastore.Entity(key=datastore_client.key('matches'))
+    entity.update({
+        "matchbetween":matchbetween,
+        "pitchtype":pitchtype,
+        "fav":fav,
+        "one":one,
+        "two":two,
+        "three":three,
+        "four":four,
+        "five":five,
+        "six":six,
+        "seven":seven,
+        "eight":eight,
+        "nine":nine,
+        "ten":ten,
+        "eleven":eleven
+    })
+    datastore_client.put(entity)
 
-
-def write_json(new_data, filename='results.json'):
-    with open(filename,'r+') as file:
-        file_data = json.load(file)
-        file_data["matches"].append(new_data)
-        file.seek(0)
-        json.dump(file_data, file, indent = 4)
-
-def filter_json(fav,pitchtype, filename='results.json'):
-    with open(filename,'r') as file:
-        file_data = json.load(file)
-        print(file_data)
-        print(fav)
-        print(pitchtype)
-        if fav != "None" and pitchtype!="None":
-            output_dict = [x for x in file_data['matches'] if x['pitchtype'] == pitchtype and x['fav'] == fav]
-            return output_dict
-        if fav != "None" and pitchtype == "None":
-            print(".....")
-            output_dict = [x for x in file_data['matches'] if  x['fav'] == fav]
-            return output_dict
-        if fav == "None" and pitchtype!= "None":
-            print("...")
-            output_dict = [x for x in file_data['matches'] if x['pitchtype'] == pitchtype ]
-            return output_dict
-        if fav == "None" and pitchtype == "None":
-            return file_data['matches']
-
+def filter_matchs(pitchtype,fav):
+    query = datastore_client.query(kind='matches')
+    if fav != "None" and pitchtype!="None":
+        query.add_filter("pitchtype", "=", pitchtype)
+        query.add_filter("fav", "=", fav)
+        matches = list(query.fetch())
+        return matches
+    if fav != "None" and pitchtype == "None":
+        query.add_filter("fav", "=", fav)
+        matches = list(query.fetch())
+        return matches
+    if fav == "None" and pitchtype != "None":
+        query.add_filter("pitchtype", "=", pitchtype)
+        matches = list(query.fetch())
+        return matches
+    if fav == "None" and pitchtype == "None":
+        matches = list(query.fetch())
+        return matches
 
 @app.route('/')
 def root():
@@ -52,30 +63,13 @@ def adddreamtem():
     nine=request.form.get("9")
     ten=request.form.get("10")
     eleven=request.form.get("11")
-    data={
-    "matchbetween":matchbetween,
-    "pitchtype":pitchtype,
-    "fav":fav,
-    "one":one,
-    "two":two,
-    "three":three,
-    "four":four,
-    "five":five,
-    "six":six,
-    "seven":seven,
-    "eight":eight,
-    "nine":nine,
-    "ten":ten,
-    "eleven":eleven
-    }
-    write_json(data)
+    adddreamteam(matchbetween,pitchtype,fav,one,two,three,four,five,six,seven,eight,nine,ten,eleven)
     return render_template('index.html')
 @app.route('/getdreamteams',methods = ["POST"])
 def getdreamtem():
     pitchtype=request.form.get("pitchtype")
     fav=request.form.get("fav")
-    res = filter_json(fav,pitchtype)
-    print(res)
+    res = filter_matchs(pitchtype,fav)
     return render_template('dreamteams.html',data=res)
 
 if __name__ == '__main__':
