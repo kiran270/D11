@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
 import json
-import flask
 app = Flask(__name__)
 
 
@@ -13,7 +12,7 @@ def write_json(new_data, filename='results.json'):
         json.dump(file_data, file, indent = 4)
 
 def filter_json(fav,pitchtype, filename='results.json'):
-    with open(filename,'r+') as file:
+    with open(filename,'r') as file:
         file_data = json.load(file)
         print(file_data)
         print(fav)
@@ -29,6 +28,8 @@ def filter_json(fav,pitchtype, filename='results.json'):
             print("...")
             output_dict = [x for x in file_data['matches'] if x['pitchtype'] == pitchtype ]
             return output_dict
+        if fav == "None" and pitchtype == "None":
+            return file_data['matches']
 
 
 @app.route('/')
@@ -37,20 +38,20 @@ def root():
 
 @app.route('/adddreamteam',methods = ["POST"])
 def adddreamtem():
-    matchbetween=flask.request.args.get("matchbetween")
-    pitchtype=flask.request.args.get("pitchtype")
-    fav=flask.request.args.get("fav")
-    one=flask.request.args.get("1")
-    two=flask.request.args.get("2")
-    three=flask.request.args.get("3")
-    four=flask.request.args.get("4")
-    five=flask.request.args.get("5")
-    six=flask.request.args.get("6")
-    seven=flask.request.args.get("7")
-    eight=flask.request.args.get("8")
-    nine=flask.request.args.get("9")
-    ten=flask.request.args.get("10")
-    eleven=flask.request.args.get("11")
+    matchbetween=request.form.get("matchbetween")
+    pitchtype=request.form.get("pitchtype")
+    fav=request.form.get("fav")
+    one=request.form.get("1")
+    two=request.form.get("2")
+    three=request.form.get("3")
+    four=request.form.get("4")
+    five=request.form.get("5")
+    six=request.form.get("6")
+    seven=request.form.get("7")
+    eight=request.form.get("8")
+    nine=request.form.get("9")
+    ten=request.form.get("10")
+    eleven=request.form.get("11")
     data={
     "matchbetween":matchbetween,
     "pitchtype":pitchtype,
@@ -71,8 +72,8 @@ def adddreamtem():
     return render_template('index.html')
 @app.route('/getdreamteams',methods = ["POST"])
 def getdreamtem():
-    pitchtype=flask.request.args.get("pitchtype")
-    fav=flask.request.args.get("fav")
+    pitchtype=request.form.get("pitchtype")
+    fav=request.form.get("fav")
     res = filter_json(fav,pitchtype)
     print(res)
     return render_template('dreamteams.html',data=res)
