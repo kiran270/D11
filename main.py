@@ -10,7 +10,25 @@ def write_json(new_data, filename='results.json'):
         file_data["matches"].append(new_data)
         file.seek(0)
         json.dump(file_data, file, indent = 4)
- 
+
+def filter_json(fav,pitchtype, filename='results.json'):
+    with open(filename,'r+') as file:
+        file_data = json.load(file)
+        print(file_data)
+        print(fav)
+        print(pitchtype)
+        if fav != "None" and pitchtype!="None":
+            output_dict = [x for x in file_data['matches'] if x['pitchtype'] == pitchtype and x['fav'] == fav]
+            return output_dict
+        if fav != "None" and pitchtype == "None":
+            print(".....")
+            output_dict = [x for x in file_data['matches'] if  x['fav'] == fav]
+            return output_dict
+        if fav == "None" and pitchtype!= "None":
+            print("...")
+            output_dict = [x for x in file_data['matches'] if x['pitchtype'] == pitchtype ]
+            return output_dict
+
 
 @app.route('/')
 def root():
@@ -31,7 +49,7 @@ def adddreamtem():
     eight=request.form.get("8")
     nine=request.form.get("9")
     ten=request.form.get("10")
-    elven=request.form.get("11")
+    eleven=request.form.get("11")
     data={
     "matchbetween":matchbetween,
     "pitchtype":pitchtype,
@@ -46,10 +64,17 @@ def adddreamtem():
     "eight":eight,
     "nine":nine,
     "ten":ten,
-    "elven":elven
+    "eleven":eleven
     }
     write_json(data)
     return render_template('index.html')
+@app.route('/getdreamteams',methods = ["POST"])
+def getdreamtem():
+    pitchtype=request.form.get("pitchtype")
+    fav=request.form.get("fav")
+    res = filter_json(fav,pitchtype)
+    print(res)
+    return render_template('dreamteams.html',data=res)
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App

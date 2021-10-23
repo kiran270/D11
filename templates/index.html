@@ -25,8 +25,8 @@
 <div class="container">
   <div class="col-md-6">
     <div class="panel panel-default">
-    <div class="panel-heading">ADD Drem Team</div>
-    <div class="panel-body">
+        <div class="panel-heading">ADD Drem Team</div>
+        <div class="panel-body">
       <form id="adddreamteam" action="/adddreamteam" method="post">
         <div class="form-group">
             <label>MatchBetween</label>
@@ -351,10 +351,38 @@
             <button type="submit" class="btn btn-success">Submit</button>
         </div>
       </form>
+        </div>
     </div>
   </div>
+  <div class="col-md-6">
+    <div class="panel-body">
+      <form id="getdreamteams" action="/getdreamteams" method="post">
+        <div>
+          <label>PitchType</label>
+          <select class="form-control" id="pitchtype" name="pitchtype">
+            <option>None</option>
+            <option>Batting</option>
+            <option>Bowling</option>
+            <option>Balanced</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Favourite</label>
+          <select class="form-control" id="fav" name="fav">
+            <option>None</option>
+            <option>70/30</option>
+            <option>60/40</option>
+            <option>50/50</option>
+            <option>40/60</option>
+            <option>30/70</option>
+          </select>
+        </div>
+        <div class="col-md-offset-5">
+            <button type="submit" class="btn btn-success">Get Dream Teams</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 </div>
 </body>
 </html>
