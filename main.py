@@ -26,9 +26,11 @@ def adddreamteam(matchbetween,stadium,pitchtype,fav,one,two,three,four,five,six,
     datastore_client.put(entity)
 
 def filter_matchs(filteroptions):
+    print(filteroptions)
     query = datastore_client.query(kind='matches')
     for x in filteroptions:
-        query.add_filter(x, "=", filteroptions[x])
+        if filteroptions[x]!="None":
+            query.add_filter(x, "=", filteroptions[x])
     matches = list(query.fetch())
     return matches
 
