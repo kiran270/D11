@@ -28,8 +28,7 @@ def adddreamteam(matchbetween,stadium,pitchtype,fav,one,two,three,four,five,six,
 def filter_matchs(filteroptions):
     query = datastore_client.query(kind='matches')
     for x in filteroptions:
-        if filteroptions[x]!="None":
-            query.add_filter(x, "=", filteroptions[x])
+        query.add_filter(x, "=", filteroptions[x])
     matches = list(query.fetch())
     return matches
 
@@ -60,11 +59,9 @@ def adddreamtem():
 def getdreamtem():
     pitchtype=request.form.get("pitchtype")
     fav=request.form.get("fav")
-    stadium=request.form.get("stadium")
     x={}
     x["pitchtype"]=pitchtype
     x["fav"]=fav
-    x["stadium"]=stadium
     res = filter_matchs(x)
     return render_template('dreamteams.html',data=res)
 
