@@ -64,7 +64,7 @@ def getdreamtem():
     x={}
     x["pitchtype"]=pitchtype
     x["fav"]=fav
-    x=["stadium"]=stadium
+    x["stadium"]=stadium
     res = filter_matchs(x)
     return render_template('dreamteams.html',data=res)
 
