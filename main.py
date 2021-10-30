@@ -4,10 +4,11 @@ from google.cloud import datastore
 datastore_client = datastore.Client()
 app = Flask(__name__)
 
-def adddreamteam(matchbetween,pitchtype,fav,one,two,three,four,five,six,seven,eight,nine,ten,eleven):
+def adddreamteam(matchbetween,stadium,pitchtype,fav,one,two,three,four,five,six,seven,eight,nine,ten,eleven):
     entity = datastore.Entity(key=datastore_client.key('matches'))
     entity.update({
         "matchbetween":matchbetween,
+        "stadium":stadium,
         "pitchtype":pitchtype,
         "fav":fav,
         "one":one,
@@ -24,24 +25,13 @@ def adddreamteam(matchbetween,pitchtype,fav,one,two,three,four,five,six,seven,ei
     })
     datastore_client.put(entity)
 
-def filter_matchs(pitchtype,fav):
+def filter_matchs(filteroptions):
     query = datastore_client.query(kind='matches')
-    if fav != "None" and pitchtype!="None":
-        query.add_filter("pitchtype", "=", pitchtype)
-        query.add_filter("fav", "=", fav)
-        matches = list(query.fetch())
-        return matches
-    if fav != "None" and pitchtype == "None":
-        query.add_filter("fav", "=", fav)
-        matches = list(query.fetch())
-        return matches
-    if fav == "None" and pitchtype != "None":
-        query.add_filter("pitchtype", "=", pitchtype)
-        matches = list(query.fetch())
-        return matches
-    if fav == "None" and pitchtype == "None":
-        matches = list(query.fetch())
-        return matches
+    for x in filteroptions:
+        if filteroptions[x]!="None":
+            query.add_filter(x, "=", filteroptions[x])
+    matches = list(query.fetch())
+    return matches
 
 @app.route('/')
 def root():
@@ -50,6 +40,7 @@ def root():
 @app.route('/adddreamteam',methods = ["POST"])
 def adddreamtem():
     matchbetween=request.form.get("matchbetween")
+    stadium=request.form.get("stadium")
     pitchtype=request.form.get("pitchtype")
     fav=request.form.get("fav")
     one=request.form.get("1")
@@ -63,13 +54,18 @@ def adddreamtem():
     nine=request.form.get("9")
     ten=request.form.get("10")
     eleven=request.form.get("11")
-    adddreamteam(matchbetween,pitchtype,fav,one,two,three,four,five,six,seven,eight,nine,ten,eleven)
+    adddreamteam(matchbetween,stadium,pitchtype,fav,one,two,three,four,five,six,seven,eight,nine,ten,eleven)
     return render_template('index.html')
 @app.route('/getdreamteams',methods = ["POST"])
 def getdreamtem():
     pitchtype=request.form.get("pitchtype")
     fav=request.form.get("fav")
-    res = filter_matchs(pitchtype,fav)
+    stadium=request.form.get("stadium")
+    x={}
+    x["pitchtype"]=pitchtype
+    x["fav"]=fav
+    x=["stadium"]=stadium
+    res = filter_matchs(x)
     return render_template('dreamteams.html',data=res)
 
 if __name__ == '__main__':
